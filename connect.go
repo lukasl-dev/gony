@@ -1,5 +1,13 @@
 package granny
 
+import "errors"
+
+var (
+	// ErrConnectDestinationEmpty occurs whenever the passed location of the
+	// Connect method is empty.
+	ErrConnectDestinationEmpty = errors.New("connect: destination must not be empty")
+)
+
 // ConnectOptions holds optional configuration options for the Connect method.
 type ConnectOptions struct {
 	RunOptions
@@ -24,6 +32,9 @@ var defaultConnectOptions = ConnectOptions{
 // address, such as 'foo@ad' or '871813768'.
 // See: https://support.anydesk.com/Command_Line_Interface
 func Connect(destination string, opts ...ConnectOptions) error {
+	if destination == "" {
+		return ErrConnectDestinationEmpty
+	}
 	p := pickConnectOptions(opts...)
 	return Run(buildConnectArgs(destination, p), p.RunOptions)
 }
