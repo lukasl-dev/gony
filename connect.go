@@ -3,7 +3,7 @@ package granny
 import "errors"
 
 var (
-	// ErrConnectDestinationEmpty occurs whenever the passed location of the
+	// ErrConnectDestinationEmpty occurs whenever the passed destination of the
 	// Connect method is empty.
 	ErrConnectDestinationEmpty = errors.New("connect: destination must not be empty")
 )
