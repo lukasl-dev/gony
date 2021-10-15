@@ -1,6 +1,9 @@
 package granny
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 var (
 	// ErrConnectDestinationEmpty occurs whenever the passed destination of the
@@ -20,6 +23,9 @@ type ConnectOptions struct {
 
 	// Plain specifies whether to start a session without window title and toolbar.
 	Plain bool `json:"plain,omitempty"`
+
+	// Password specifies the password to authorize the session.
+	Password string `json:"passphrase,omitempty"`
 }
 
 // defaultConnectOptions are the default ConnectOptions which are used if none
@@ -36,6 +42,9 @@ func Connect(destination string, opts ...ConnectOptions) error {
 		return ErrConnectDestinationEmpty
 	}
 	p := pickConnectOptions(opts...)
+	if p.Password != "" {
+		p.In = strings.NewReader(p.Password)
+	}
 	return Run(buildConnectArgs(destination, p), p.RunOptions)
 }
 
@@ -60,6 +69,9 @@ func buildConnectArgs(destination string, opts ConnectOptions) (args []string) {
 	}
 	if opts.Plain {
 		args = append(args, "--plain")
+	}
+	if opts.Password != "" {
+		args = append(args, "--with-password")
 	}
 	return args
 }
